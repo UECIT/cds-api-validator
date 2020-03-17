@@ -1,0 +1,6 @@
+version: '3.2'
+services:
+  tkw:
+    image: nhsdigitalmait/cdss_validator_config:20200313
+    ports:
+      - "4849:4849"

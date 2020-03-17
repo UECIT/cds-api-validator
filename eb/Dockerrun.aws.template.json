@@ -1,0 +1,12 @@
+{
+  "AWSEBDockerrunVersion": "1",
+  "Image": {
+    "Name": "nhsdigitalmait/cdss_validator_config:20200313",
+    "Update": "true"
+  },
+  "Ports": [
+    {
+      "ContainerPort": "4849"
+    }
+  ]
+}

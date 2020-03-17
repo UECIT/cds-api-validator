@@ -1,0 +1,48 @@
+# Official docker image.
+image: docker:latest
+
+stages:
+  - deploy
+
+eb-tags:
+  stage: deploy
+  script:
+    - apk add zip
+    - sed s/{{tag}}/$CI_COMMIT_REF_SLUG/ eb/Dockerrun.aws.template.json > eb/Dockerrun.aws.json
+    - cd eb && zip -r ../$CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG-eb.zip Dockerrun.aws.json
+  only:
+    - tags
+  artifacts:
+    paths:
+      - "*-eb.zip"
+      - README.md
+
+eb-develop:
+  stage: deploy
+  script:
+    - apk add zip
+    - sed s/{{tag}}/develop-$CI_COMMIT_SHORT_SHA/ eb/Dockerrun.aws.template.json > eb/Dockerrun.aws.json
+    - cd eb && zip -r ../$CI_PROJECT_NAME-develop-$CI_COMMIT_SHORT_SHA-eb.zip Dockerrun.aws.json
+  only:
+    - develop
+  artifacts:
+    expire_in: 1 week
+    paths:
+      - "*-eb.zip"
+      - README.md
+
+eb-branches:
+  stage: deploy
+  script:
+    - apk add zip
+    - sed s/{{tag}}/branch-$CI_COMMIT_REF_SLUG/ eb/Dockerrun.aws.template.json > eb/Dockerrun.aws.json
+    - cd eb && zip -r ../$CI_PROJECT_NAME-branch-$CI_COMMIT_REF_SLUG-eb.zip Dockerrun.aws.json
+  only:
+    - branches
+  except:
+    - develop
+  artifacts:
+    expire_in: 1 week
+    paths:
+      - "*-eb.zip"
+      - README.md
